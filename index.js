@@ -1,17 +1,18 @@
-function fetchBooks() {
-  // To pass the tests, don't forget to return your fetch!
-  
-}
+const fetch = require('your/fetch/module/path');
+const { renderBooks } = require('./path/to/renderBooks');
 
-function renderBooks(books) {
-  const main = document.querySelector('main');
-  books.forEach(book => {
-    const h2 = document.createElement('h2');
-    h2.innerHTML = book.name;
-    main.appendChild(h2);
-  });
-}
+test('fetchBooks() calls renderBooks() with JSON response', async () => {
+  const spyRenderBooks = jest.spyOn(renderBooks, 'renderBooks');
 
-document.addEventListener('DOMContentLoaded', function() {
-  fetchBooks();
+  const expectedResponse = { books: ['book1', 'book2'] };
+  jest.spyOn(global, 'fetch').mockImplementation(() =>
+    Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve(expectedResponse),
+    })
+  );
+
+  await fetchBooks();
+
+  expect(spyRenderBooks).toHaveBeenCalledWith(expectedResponse);
 });
