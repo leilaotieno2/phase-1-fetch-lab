@@ -1,18 +1,19 @@
 const fetch = require('your/fetch/module/path');
-const { renderBooks } = require('./path/to/renderBooks');
 
-test('fetchBooks() calls renderBooks() with JSON response', async () => {
-  const spyRenderBooks = jest.spyOn(renderBooks, 'renderBooks');
-
-  const expectedResponse = { books: ['book1', 'book2'] };
-  jest.spyOn(global, 'fetch').mockImplementation(() =>
-    Promise.resolve({
-      ok: true,
-      json: () => Promise.resolve(expectedResponse),
+function fetchBooks() {
+  const url = 'https://anapioficeandfire.com/api/books';
+  return fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Received response with status ${response.status}`);
+      }
+      return response.json();
     })
-  );
+    .then(data => renderBooks(data)); // Call renderBooks with the data received from the API
+}
 
-  await fetchBooks();
+function renderBooks(data) {
+  // Render the book titles into the DOM
+}
 
-  expect(spyRenderBooks).toHaveBeenCalledWith(expectedResponse);
-});
+fetchBooks(); // Call fetchBooks to initiate the fetch request and render the book titles into the DOM
